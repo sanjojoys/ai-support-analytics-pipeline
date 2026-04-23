@@ -23,6 +23,49 @@ It marks my transition from Data Analysis to **Analytics Engineering**, focusing
 
 ---
 
+## Why I built this
+
+This project was built to demonstrate analytics engineering skills for product and data roles, with a focus on:
+
+- warehouse-first data modeling
+- Airflow orchestration
+- dbt-based transformations
+- Snowflake raw-to-mart design
+- data quality testing and source freshness monitoring
+- product analytics for activation, retention, experimentation, and support operations
+
+## Business questions
+
+This pipeline is designed to answer questions such as:
+
+- Where do users drop off between signup and activation?
+- Which onboarding actions are associated with higher retention?
+- How does AI feature adoption relate to support outcomes?
+- Do escalation patterns increase before churn?
+- Which customer segments benefit most from AI-assisted support?
+
+## Architecture
+
+```text
+Synthetic CSV generation
+        |
+        v
+Snowflake RAW layer
+        |
+        v
+dbt staging models
+        |
+        v
+dbt intermediate models
+        |
+        v
+dbt marts (facts + dimensions + daily KPIs)
+        |
+        +--> dbt tests + source freshness + docs
+        |
+        v
+Dashboard / business summary
+
 ## Project Structure
 
 ```

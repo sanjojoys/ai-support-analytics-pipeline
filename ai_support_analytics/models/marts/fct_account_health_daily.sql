@@ -1,0 +1,1 @@
+select * from {{ ref('int_account_health_daily') }}

@@ -1,0 +1,27 @@
+version: 2
+
+models:
+  - name: dim_accounts  # Added the 's' to match your filename
+    columns:
+      - name: account_id
+        tests:
+          - unique
+          - not_null
+      - name: plan_tier
+        tests:
+          - accepted_values:
+              values: ['mid_market', 'smb', 'enterprise']
+              
+  - name: dim_users     # Added the 's'
+    columns:
+      - name: user_id
+        tests:
+          - unique
+          - not_null
+
+  - name: fct_support_conversations # Match the plural filename
+    columns:
+      - name: conversation_id
+        tests:
+          - unique
+          - not_null

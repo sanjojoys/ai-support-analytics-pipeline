@@ -1,0 +1,11 @@
+raw_event_name,canonical_event_name,event_group
+signup_completed,signup_completed,onboarding
+workspace_connected,workspace_connected,onboarding
+teammate_invited,teammate_invited,onboarding
+conversation_created,conversation_created,engagement
+ai_suggestion_viewed,ai_suggestion_viewed,ai
+ai_suggestion_accepted,ai_suggestion_accepted,ai
+ticket_created,ticket_created,support
+conversation_resolved,conversation_resolved,support
+dashboard_viewed,dashboard_viewed,analytics
+report_exported,report_exported,analytics

@@ -1,0 +1,18 @@
+version: 2
+
+sources:
+  - name: raw
+    database: AI_SUPPORT_ANALYTICS
+    schema: RAW
+    config:
+      freshness:
+        warn_after: {count: 12, period: hour}
+        error_after: {count: 24, period: hour}
+
+    tables:
+      - name: raw_accounts
+      - name: raw_product_events
+      - name: raw_support_conversations
+      - name: raw_users
+      - name: raw_experiment_assignments
+      - name: raw_account_daily_status

@@ -1,0 +1,34 @@
+.git
+.env
+.DS_Store
+airflow_settings.yaml
+__pycache__/
+astro
+.venv
+airflow-webserver.pid
+webserver_config.py
+airflow.cfg
+airflow.db
+# dbt specific
+target/
+dbt_packages/
+logs/
+
+# Python / Virtual Environments
+venv/
+.venv/
+__pycache__/
+*.pyc
+
+# IDEs
+.vscode/
+.idea/
+.DS_Store
+
+# Secrets (EXTREMELY IMPORTANT)
+profiles.yml
+.env
+*.json  # Only if you have key files here; be careful!
+
+# Data
+data/*.csv

@@ -1,0 +1,12 @@
+{
+  "accounts": 500,
+  "users": 11110,
+  "product_events": 508576,
+  "support_conversations": 24311,
+  "experiment_assignments": 11110,
+  "account_daily_status": 60000,
+  "dim_date": 120,
+  "event_mapping": 10,
+  "output_directory": "/Users/sanjojoy/Documents/Study/ai-support-analytics-pipeline/data",
+  "seed": 42
+}

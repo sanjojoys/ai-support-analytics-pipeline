@@ -1,45 +1,125 @@
-Overview
-========
+# AI Support Analytics Pipeline
 
-Welcome to Astronomer! This project was generated after you ran 'astro dev init' using the Astronomer CLI. This readme describes the contents of the project, as well as how to run Apache Airflow on your local machine.
+[![CI](https://github.com/sanjojoys/ai-support-analytics-pipeline/actions/workflows/ci.yml/badge.svg)](https://github.com/sanjojoys/ai-support-analytics-pipeline/actions)
 
-Project Contents
-================
+## Overview
 
-Your Astro project contains the following files and folders:
+This project demonstrates a fully modular, production-grade Modern Data Stack (MDS) pipeline for transforming raw SaaS product and support data into actionable business intelligence.  
+It marks my transition from Data Analysis to **Analytics Engineering**, focusing on scalable, code-driven architecture with Airflow orchestration and dbt for data transformations.
 
-- dags: This folder contains the Python files for your Airflow DAGs. By default, this directory includes one example DAG:
-    - `example_astronauts`: This DAG shows a simple ETL pipeline example that queries the list of astronauts currently in space from the Open Notify API and prints a statement for each astronaut. The DAG uses the TaskFlow API to define tasks in Python, and dynamic task mapping to dynamically print a statement for each astronaut. For more on how this DAG works, see our [Getting started tutorial](https://www.astronomer.io/docs/learn/get-started-with-airflow).
-- Dockerfile: This file contains a versioned Astro Runtime Docker image that provides a differentiated Airflow experience. If you want to execute other commands or overrides at runtime, specify them here.
-- include: This folder contains any additional files that you want to include as part of your project. It is empty by default.
-- packages.txt: Install OS-level packages needed for your project by adding them to this file. It is empty by default.
-- requirements.txt: Install Python packages needed for your project by adding them to this file. It is empty by default.
-- plugins: Add custom or community plugins for your project to this file. It is empty by default.
-- airflow_settings.yaml: Use this local-only file to specify Airflow Connections, Variables, and Pools instead of entering them in the Airflow UI as you develop DAGs in this project.
+- **Source data:** Synthetic but realistic SaaS product and support datasets (accounts, events, conversations, users)
+- **Tools:** Apache Airflow, dbt, Python, Snowflake (or other warehouse adaptable), Docker
+- **Purpose:** Clean, transform, and model operational and support data for fast analytics, KPI tracking & dashboarding.
 
-Deploy Your Project Locally
-===========================
+---
 
-Start Airflow on your local machine by running 'astro dev start'.
+## Key Features
 
-This command will spin up five Docker containers on your machine, each for a different Airflow component:
+- **Robust Airflow DAGs** orchestrate ingestion, quality checks, and multi-step transformation pipelines.
+- **dbt project:** Fully modularized with staging, intermediate, and analytics marts, plus data quality tests.
+- **Substantial sample data:** 500 accounts, 11,110 users, 508,576 product events, 24,311 support conversations.
+- **CI/CD:** Linting & build checks with GitHub Actions.
+- **Portfolio artifacts:** Markdown docs, screenshots, and dashboard links for rapid comprehension by reviewers.
 
-- Postgres: Airflow's Metadata Database
-- Scheduler: The Airflow component responsible for monitoring and triggering tasks
-- DAG Processor: The Airflow component responsible for parsing DAGs
-- API Server: The Airflow component responsible for serving the Airflow UI and API
-- Triggerer: The Airflow component responsible for triggering deferred tasks
+---
 
-When all five containers are ready the command will open the browser to the Airflow UI at http://localhost:8080/. You should also be able to access your Postgres Database at 'localhost:5432/postgres' with username 'postgres' and password 'postgres'.
+## Project Structure
 
-Note: If you already have either of the above ports allocated, you can either [stop your existing Docker containers or change the port](https://www.astronomer.io/docs/astro/cli/troubleshoot-locally#ports-are-not-available-for-my-local-airflow-webserver).
+```
+.
+├── ai_support_analytics/         # dbt project (models, seeds, snapshots, marts)
+├── dags/                        # Airflow DAGs for orchestration
+├── data/seeds/                  # Additional seed CSVs for dbt, synthetic data
+├── docs/                        # Markdown documentation and diagrams
+├── dashboard/                   # Portfolio screenshots, BI outputs, or dashboard links
+├── tests/                       # Pytest-based data/process tests
+├── .github/workflows/ci.yml     # CI: lint, test, dbt checks on push/PR
+├── Dockerfile, requirements.txt  # For Airflow environment build
+└── README.md                    # 📄 YOU ARE HERE!
+```
 
-Deploy Your Project to Astronomer
-=================================
+---
 
-If you have an Astronomer account, pushing code to a Deployment on Astronomer is simple. For deploying instructions, refer to Astronomer documentation: https://www.astronomer.io/docs/astro/deploy-code/
+## Getting Started
 
-Contact
-=======
+1. **Clone the repo**
+   ```bash
+   git clone https://github.com/sanjojoys/ai-support-analytics-pipeline.git
+   cd ai-support-analytics-pipeline
+   ```
 
-The Astronomer CLI is maintained with love by the Astronomer team. To report a bug or suggest a change, reach out to our support.
+2. **Start Airflow locally:**
+   ```bash
+   astro dev start
+   ```
+   - Airflow UI: [http://localhost:8080](http://localhost:8080)  
+   - DB: `localhost:5432/postgres` (user: `postgres`, pw: `postgres`)
+
+3. **(Optional) Run dbt transformations**
+   ```bash
+   cd ai_support_analytics
+   dbt seed
+   dbt run
+   dbt test
+   ```
+
+4. **View artifacts:**
+   - Documentation: `docs/`
+   - Sample dashboards: `dashboard/`
+
+---
+
+## Data and Analytics
+
+| Table / File                  | Records (approx.) | Description                                     |
+|-------------------------------|-------------------|-------------------------------------------------|
+| `accounts.csv`, mart models   | 500               | Companies in synthetic SaaS dataset             |
+| `users.csv`                   | 11,110            | End users across accounts                       |
+| `product_events.csv`          | 508,576           | App/product events for all users                |
+| `support_conversations.csv`   | 24,311            | Interactions between users and support          |
+
+All data is synthetic and safely shareable.
+
+---
+
+### Example Analytics
+
+- **fct_kpis_daily:** Daily KPIs at account or system level
+- **fct_support_conversations:** Support efficiency, response time
+- **fact_user_journey:** Event-level user journeys from sign-up to feature adoption
+- **dim_accounts:** Segmentation by company attributes
+
+More details: [ai_support_analytics/README.md](ai_support_analytics/README.md)
+
+---
+
+## Airflow & Orchestration
+
+- All DAGs are tagged and set with robust retry strategies.
+- Production-ready tasks (actual Snowflake load, no placeholders).
+- See `dags/ai_support_full_pipeline.py` for an end-to-end DAG.
+
+---
+
+## Contributing
+
+Pull requests are welcome! See [CONTRIBUTING.md](docs/CONTRIBUTING.md) (or create one).
+
+---
+
+## Dashboard & Portfolio Artifacts
+
+- Screenshots, dashboards, and process diagrams: [dashboard/](dashboard/)
+- Documentation: [docs/](docs/)
+
+---
+
+## License
+
+[MIT](LICENSE)
+
+---
+
+## Contact
+
+- Owner: [Sanjo Joy (@sanjojoys)](https://github.com/sanjojoys)

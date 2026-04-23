@@ -1,168 +1,107 @@
-# AI Support Analytics Pipeline
+***
+
+# 🚀 AI Support Analytics Pipeline: A Medallion Architecture Implementation
 
 [![CI](https://github.com/sanjojoys/ai-support-analytics-pipeline/actions/workflows/ci.yml/badge.svg)](https://github.com/sanjojoys/ai-support-analytics-pipeline/actions)
 
-## Overview
+## 🎯 Project Overview
+This project demonstrates a production-grade Modern Data Stack (MDS) built to transform messy SaaS operational data into high-fidelity business intelligence. 
 
-This project demonstrates a fully modular, production-grade Modern Data Stack (MDS) pipeline for transforming raw SaaS product and support data into actionable business intelligence.  
-It marks my transition from Data Analysis to **Analytics Engineering**, focusing on scalable, code-driven architecture with Airflow orchestration and dbt for data transformations.
+It marks my transition from **Data Analysis to Analytics Engineering**, moving beyond static reporting to building scalable, self-healing data infrastructure. By treating **Data as Code**, this pipeline ensures that product and support insights are automated, tested, and warehouse-optimized.
 
-- **Source data:** Synthetic but realistic SaaS product and support datasets (accounts, events, conversations, users)
-- **Tools:** Apache Airflow, dbt, Python, Snowflake (or other warehouse adaptable), Docker
-- **Purpose:** Clean, transform, and model operational and support data for fast analytics, KPI tracking & dashboarding.
 
----
 
-## Key Features
-
-- **Robust Airflow DAGs** orchestrate ingestion, quality checks, and multi-step transformation pipelines.
-- **dbt project:** Fully modularized with staging, intermediate, and analytics marts, plus data quality tests.
-- **Substantial sample data:** 500 accounts, 11,110 users, 508,576 product events, 24,311 support conversations.
-- **CI/CD:** Linting & build checks with GitHub Actions.
-- **Portfolio artifacts:** Markdown docs, screenshots, and dashboard links for rapid comprehension by reviewers.
+### 🛠 The Tech Stack
+* **Orchestration:** Apache Airflow (Astro CLI)
+* **Transformation:** dbt Core (Data Build Tool)
+* **Warehouse:** Snowflake
+* **Ingestion:** Python (Custom Synthetic Data Generators)
+* **BI Layer:** Looker Studio / Tableau
+* **CI/CD:** GitHub Actions (Linting & SQL Fluff)
 
 ---
 
-## Why I built this
+## 🏗 Data Architecture & Modeling
+I implemented a **Medallion Architecture** to ensure data integrity and clear lineage:
 
-This project was built to demonstrate analytics engineering skills for product and data roles, with a focus on:
+1.  **Bronze (Raw):** Immutable CSV data ingested into Snowflake via Airflow.
+2.  **Silver (Staging & Intermediate):** * **Staging:** Source-aligned cleanup, type casting, and normalization (Materialized as Views).
+    * **Intermediate:** Complex sessionization, deduplication, and retention logic (Materialized as Transient Tables to optimize cost).
+3.  **Gold (Marts):** High-performance Star Schema (Facts & Dimensions) optimized for BI tools.
 
-- warehouse-first data modeling
-- Airflow orchestration
-- dbt-based transformations
-- Snowflake raw-to-mart design
-- data quality testing and source freshness monitoring
-- product analytics for activation, retention, experimentation, and support operations
 
-## Business questions
 
-This pipeline is designed to answer questions such as:
+---
 
-- Where do users drop off between signup and activation?
-- Which onboarding actions are associated with higher retention?
-- How does AI feature adoption relate to support outcomes?
-- Do escalation patterns increase before churn?
-- Which customer segments benefit most from AI-assisted support?
+## 💡 Business Questions Answered
+This pipeline isn't just "plumbing"; it's built to answer critical product-led growth questions:
+* **Retention:** Does AI feature adoption in the first 7 days correlate with D28 retention?
+* **Support ROI:** Which customer segments experience the highest resolution efficiency through AI assistance?
+* **Churn Signals:** Can we identify "High Ticket / Low Engagement" accounts before they churn?
 
-## Architecture
+---
 
-```text
-Synthetic CSV generation
-        |
-        v
-Snowflake RAW layer
-        |
-        v
-dbt staging models
-        |
-        v
-dbt intermediate models
-        |
-        v
-dbt marts (facts + dimensions + daily KPIs)
-        |
-        +--> dbt tests + source freshness + docs
-        |
-        v
-Dashboard / business summary
+## 🛠 Engineering Deep Dive
 
-## Project Structure
+### 1. Robust Orchestration (Airflow)
+I utilized Airflow to manage the data lifecycle across four dedicated DAGs:
+* `ingest_raw_daily`: Bulk-loading CSVs into Snowflake stages.
+* `source_freshness_daily`: Ensuring our pipeline doesn't run on stale data.
+* `dbt_run_daily` & `dbt_test_daily`: Modular transformation and quality gating.
 
+### 2. Custom dbt Macros
+To overcome Snowflake's default schema prefixing, I authored a custom `generate_schema_name` macro. This allows for a clean `STAGING` vs. `MART` structure, making the warehouse intuitive for end-user analysts.
+
+### 3. Data Quality & Testing
+* **Generic Tests:** Applied `unique`, `not_null`, and `relationship` tests across all primary keys.
+* **Singular Tests:** Built business-rule tests to ensure `activation_date` never precedes `signup_date`.
+
+---
+
+## 📊 Dashboard & Visualizations
+The final output is an **Executive Health Dashboard**. 
+* **KPIs:** D28 Retention Rate, Total MRR by Region, and AI Adoption Trends.
+* **Deep Dive:** Correlation analysis between Health Scores and Support Escalations.
+
+> **View Dashboard Screenshots:** [Link to dashboard folder](./dashboard/)
+
+---
+
+## 🚀 Getting Started
+
+### 1. Prerequisites
+* Docker Desktop
+* Astro CLI
+* Snowflake Account
+
+### 2. Installation & Execution
+```bash
+# Clone the repository
+git clone https://github.com/sanjojoys/ai-support-analytics-pipeline.git
+cd ai-support-analytics-pipeline
+
+# Start the environment
+astro dev start
+
+# Run the transformations
+cd ai_support_analytics
+dbt seed
+dbt run
+dbt test
 ```
-.
-├── ai_support_analytics/         # dbt project (models, seeds, snapshots, marts)
-├── dags/                        # Airflow DAGs for orchestration
-├── data/seeds/                  # Additional seed CSVs for dbt, synthetic data
-├── docs/                        # Markdown documentation and diagrams
-├── dashboard/                   # Portfolio screenshots, BI outputs, or dashboard links
-├── tests/                       # Pytest-based data/process tests
-├── .github/workflows/ci.yml     # CI: lint, test, dbt checks on push/PR
-├── Dockerfile, requirements.txt  # For Airflow environment build
-└── README.md                    # 📄 YOU ARE HERE!
-```
 
 ---
 
-## Getting Started
-
-1. **Clone the repo**
-   ```bash
-   git clone https://github.com/sanjojoys/ai-support-analytics-pipeline.git
-   cd ai-support-analytics-pipeline
-   ```
-
-2. **Start Airflow locally:**
-   ```bash
-   astro dev start
-   ```
-   - Airflow UI: [http://localhost:8080](http://localhost:8080)  
-   - DB: `localhost:5432/postgres` (user: `postgres`, pw: `postgres`)
-
-3. **(Optional) Run dbt transformations**
-   ```bash
-   cd ai_support_analytics
-   dbt seed
-   dbt run
-   dbt test
-   ```
-
-4. **View artifacts:**
-   - Documentation: `docs/`
-   - Sample dashboards: `dashboard/`
+## 📈 Data Volume at a Glance
+| Entity | Records | Description |
+| :--- | :--- | :--- |
+| **Accounts** | 500 | SaaS companies (SMB to Enterprise) |
+| **Users** | 11,110 | Individual end-users |
+| **Product Events** | ~508k | Feature clicks, logins, and AI interactions |
+| **Support Conv.** | ~24k | Multi-channel support interactions |
 
 ---
 
-## Data and Analytics
-
-| Table / File                  | Records (approx.) | Description                                     |
-|-------------------------------|-------------------|-------------------------------------------------|
-| `accounts.csv`, mart models   | 500               | Companies in synthetic SaaS dataset             |
-| `users.csv`                   | 11,110            | End users across accounts                       |
-| `product_events.csv`          | 508,576           | App/product events for all users                |
-| `support_conversations.csv`   | 24,311            | Interactions between users and support          |
-
-All data is synthetic and safely shareable.
-
----
-
-### Example Analytics
-
-- **fct_kpis_daily:** Daily KPIs at account or system level
-- **fct_support_conversations:** Support efficiency, response time
-- **fact_user_journey:** Event-level user journeys from sign-up to feature adoption
-- **dim_accounts:** Segmentation by company attributes
-
-More details: [ai_support_analytics/README.md](ai_support_analytics/README.md)
-
----
-
-## Airflow & Orchestration
-
-- All DAGs are tagged and set with robust retry strategies.
-- Production-ready tasks (actual Snowflake load, no placeholders).
-- See `dags/ai_support_full_pipeline.py` for an end-to-end DAG.
-
----
-
-## Contributing
-
-Pull requests are welcome!
-
----
-
-## Dashboard & Portfolio Artifacts
-
-- Screenshots, dashboards, and process diagrams: [dashboard/](dashboard/)
-- Documentation: [docs/](docs/)
-
----
-
-## License
-
-[MIT](LICENSE)
-
----
-
-## Contact
-
-- Owner: [Sanjo Joy (@sanjojoys)](https://github.com/sanjojoys)
+## 👤 Contact
+**Sanjo Joy**  
+* [GitHub](https://github.com/sanjojoys)

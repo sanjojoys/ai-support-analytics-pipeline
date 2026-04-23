@@ -103,7 +103,7 @@ More details: [ai_support_analytics/README.md](ai_support_analytics/README.md)
 
 ## Contributing
 
-Pull requests are welcome! See [CONTRIBUTING.md](docs/CONTRIBUTING.md) (or create one).
+Pull requests are welcome!
 
 ---
 
